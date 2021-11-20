@@ -79,13 +79,13 @@ func Maskf(e error, msg string, args ...interface{}) error {
 		stack := append(v.stack, identifyCaller())
 		return &Error{
 			kind:  v.kind,
-			msg:   fmt.Sprintf(msg, args...) + ":" + v.msg,
+			msg:   fmt.Sprintf(msg, args...) + ": " + v.msg,
 			stack: stack,
 		}
 	default:
 		return &Error{
 			kind:  ExecutionError,
-			msg:   fmt.Sprintf(msg, args...) + ":" + e.Error(),
+			msg:   fmt.Sprintf(msg, args...) + ": " + e.Error(),
 			stack: []string{identifyCaller()},
 		}
 	}

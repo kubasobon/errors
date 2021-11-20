@@ -15,6 +15,8 @@ const (
 	NotImplemented ErrorKind = "NotImplemented"
 )
 
+// Error is exported so you can easily check types, but should be not used
+// directly. Call New instead.
 type Error struct {
 	kind  ErrorKind
 	msg   string
@@ -29,6 +31,8 @@ func (e *Error) Error() string {
 // ensure type Error fulfills error interface
 var _ error = &Error{}
 
+// New creates an error of ExecutionError kind. A message is mandatory. Stack
+// of function calls will be attached automatically.
 func New(msg string, args ...interface{}) error {
 	return &Error{
 		kind:  ExecutionError,
@@ -37,6 +41,8 @@ func New(msg string, args ...interface{}) error {
 	}
 }
 
+// NewOfKind creates an error of a predefined or custom kind, much like
+// New.
 func NewOfKind(kind ErrorKind, msg string, args ...interface{}) error {
 	return &Error{
 		kind:  kind,
@@ -45,6 +51,9 @@ func NewOfKind(kind ErrorKind, msg string, args ...interface{}) error {
 	}
 }
 
+// Mask helps convert generic errors into *Error type. You can use it to
+// pin-point breaking calls in the code - it automatically appends a call
+// stack.
 func Mask(e error) error {
 	switch v := e.(type) {
 	case *Error:
@@ -63,6 +72,7 @@ func Mask(e error) error {
 	}
 }
 
+// Maskf does exactly what Mask does, but you can add a custom message.
 func Maskf(e error, msg string, args ...interface{}) error {
 	switch v := e.(type) {
 	case *Error:
